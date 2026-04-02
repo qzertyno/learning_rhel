@@ -1,0 +1,131 @@
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.1
+ stdin stdout stderr =>  standard input, output, error
+
+> 	      scrivi in un file
+    >> 	      appendi in un file 
+2>/dev/null   reindirizza lo standard error, ossia gli errori, verso il dispositivo speciale, di scarto 
+     <        riceve l'input da file 
+
+Usando il piping =>   com1 | com2  => usiamo lo stdout di com1 come stdin di com2     
+
+cat file      => mostra contenuto di un file
+
+man man       => mostra il manuale di man 
+
+man -k user | grep 9    =>  cerca tra le pagine di man, la stringa "user" che corrispondano alla categoria 9
+apropos | grep 9 	=>  (come sopra)
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.2
+ history  =>  registra i comamndi digitati dall'utente, che sno memorizzati in ~/.bash_history
+Il numero delle entry salvati nel file sono definiti con HISTSIZE ed HISTFILESIZE  (di default, memorizzati a 1000)
+
+Scorro i comandi con le frecce (up, down);  reverse search (con pattern) usando CTRL+r
+!nn  ripete un comando dall'history basato sul suo numero di memorizzazione
+!x   ripete l'ultimo comando che inizia con x
+
+history -w     => sincronizza la current history, dalla memoria, all'history file
+history -c     => pulisce la memoria dell'history file, ma dopo bisogna lanciare history -w
+history -d nn  => rimuove la linea numero nn dall'history
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.3
+ shorcuts:
+CTRL+c = interrompe il processo interattivo
+CTRL+c = manda al processo interattivo il segnale di end-of-file
+CTRL+a = sposta il cursore all'inizio della riga
+CTRL+e = sposta il cursore alla fine della riga
+CTRL+l = pulisce lo schermo
+CTRL+u = cancella la riga corrente
+ALT+b  = sposta il cursore una parola indietro
+ALT+f  = sposta il cursore una parola avanti
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.4
+ shell expansion:
+gobbling => espande il filename grazie ai wildcard quali:
+		* => vale per tutti i caratteri ripetuti da 1 ad n volte (per es: ls a*, ls * elenca dir con elementi presenti)
+		? => vale tutti i caratteri, ripetuti una sola volta
+   	    [a-z]* => tutte le parole che iniziano con una lettera minuscola seguita da n (con n> 0) caratteri	
+  touch file{1..9} => creare file chiamati file1,file2, ..., file9
+   useradd {a,b,c} => crea gli uentei a, b, c
+              cd ~ => sposta nella cartella home dell'utente che esegue il comando
+        echo $PATH => mostra i path degli eseguibili presenti
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.5
+ escaping:
+	""   =>  sopprimono gobbling e shell expansion; 
+		 permettono l'esecuzione di comandi ( echo "Oggi è $(date)" ) e la sostituzione delle variabili ( echo "$SHELL" )
+		 interpretano: \, $, `, !	
+	''   =>  escludonon il significato speciale di qualsiasi carattere ( echo '$PATH' == echo \$PATH => [output] $PATH
+	\    =>  evita l'espansione del carattere che la segue 	
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.6
+ varibles:
+La shell ha delle variabili di sistema standard;  digitando env, si ottiene l'elenco di tutte le variabili d'ambiente. 
+Gli utenti possono definire le variabili con =>  export var1="usare doppie virgolette con una stringa con spazi", ma le variabili
+diventano persistenti solo se presenti in file specifici (.profile, per la shell di login;  .bashrc per tutte le shell interattive).
+Con export, vedo la variabile nella shell e nelle sotto-shell ma non in nuove shell.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.7
+ alias:
+Con alias, posso definire comandi personalizzati, ne esistono già alcuni presenti nel sistema di default.
+Digitando il comando alias, ottengo la lista di tutti gli alias, registrati nel sistema.
+Per definirne uno nuovo =>  alias nome_alias='comando da eseguire'.
+Per rimuoverne uno =>  unalias nome_alias_da_rimuovere.
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 5.8
+ bash shell
+Le impostazioni della shell bash, sono memorizzate in file diversi per compiti diversi:
+ /etc/profile =>  file di configurazione globale, usato per impostare ambienti e script di avvio per shell di login. Contiene impostazioni valide per tutti gli utenti del sistema.  Ordine => /etc/profile → /etc/profile.d/*.sh → ~/.bash_profile (~/.profile se il primo non esiste).
+ /etc/bashrc  => script configurazione utente eseguito da bash all'avvio di ogni shell interattiva non di login. 
+ ~/.bash_profile =>  versione dello script di configurazione specifico per l'utente (versione utente di /etc/profile).
+  ~/.bashrc =>  script di configurazione specifico per l'utente (versione utente di /etc/bashrc)	
+ Per rendere persistenti variabili od alias, per tutti o per utenti specifici, vanno usati questi file,
