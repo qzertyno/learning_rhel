@@ -1,0 +1,117 @@
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 6.1
+ File Hierarchy System => uso delle directory standardizzato (indicazioni per la sua struttura tramite linee guida FHS, mantenuto dalla Linux Foundation)
+
+Il punto di partenza del filesystem è la root / 
+I device possono esssere integrati, quindi montati, attraverso il comando mount /dev/sdX  /punto_di_mount
+/etc => contiene tutti i file di configurazione
+/usr => contiene /bin /sbin  dove ci sono i binari dei programmi (sbin richiede privilegi di root) 
+/var => usata per "cose" "temporanee" (log di registro, etc)
+/tmp => contiene i file temporanei
+man hier => mostra la gerarchia del filesystem
+man file hierarchy => panoramica della gerarchia del filesystem
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 6.2
+ Essential Commands 
+
+ls => elenca file e directory
+cp => copia file
+    cp /etc/[a-b]*  /destinazione ( . per la cartella corrente)  [COPIA TUTTI FILE CHE INIZIANO CON UNA LETTERE MINUSCOLA]
+rm => cancellare un file (-r ricorsivamente, si usa per le dir non vuote   -f forza la cancellazione)
+mv => sposta file o cartelle oppure le rinomina
+mkdir => crea una directory
+rmdir => rimuove le directory non vuote
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 6.3
+ Find File:
+which  => cerca il binario di un comando in $PATH
+locate => cerca un file nel filesystem, funziona se si tiene aggiornato il db che memorizza i file (con updatedb)
+find => trova i file, strumento flessibile con molte varianti
+     =>  find / -name "hosts"   (cerca nei file "hosts" partendo dalla root)
+     =>  find / -name "*host*" -type f -size +100k(tipo file, nome che contenga 'hosts', grandezza > di 100Kb) 
+     =>  find /etc -exec grep -l edm {} \;  (cerca in /etc tutti i file che contengano edm)
+     =>  mkdir ./temp1 -p; find /etc -exec grep -l edm {} \; -exec cp {} ./temp1 2>/dev/null (cerca i file che contengono edm e lo copia in ./temp1 dopo averla creata se serve)
+     =>  find /etc -name * | xargs grep "127.0.0.1" (trova tutti i file in /etc che contengono 127.0. etc etc)
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 6.4
+ Mount: il montaggio di un filesystem è essenziale per a gerarchia dei filesystem. 
+Per accedere ad un device, questo deve essere collegato ad una directory (una chiavetta USB, un hard disk, etc), si chiama mount.
+Linux usa diversi punti di mount per differenti tipi di dati (per sicurezza, per gestione, per opzioni di mount specifiche)
+Per montare un device => mount /dev/sdX /punto_di_mount
+Con findmnt => ottengo l'elenco di tutti i device montati ed in quale punto.
+Posso anche montare un dispositivo già montato, in un altro percorso, e smontarlo con umount.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 6.5
+ Links => sono puntatori a files in differenti path
+E'utile per rendere disponibile un file in diverse posizioni del filesystem
+Esistono gli hard link e symbolic link (o soft link)
+il comando ln => crea un hard link
+il comando ln -s => crea un symbolic link
+I file sono memorizzati in blocks e sono identificati ed indicizzati con gli inode;  nome_file eventuale_altro_nome => inode => block
+
+           soft link   soft link
+                \       /
+		 \     /
+  hard link	hard link
+       \	   /
+        \         /
+         \       /
+         -----------   
+         |  inode  | - - - - - - blocks    
+         -----------
+Se cancello il riferimento di un symlink, il collegamento simbolico non e' piu' valido. 
+Se cancello un hard link che si rierisce ad un inode, ma se esistono altri, il contenuto dell'inode sara' ancora raggiungibile.
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ 6.6 + 6.7
+ Archiving Files
+TAR = creato molto tempo fa, è il Tape ARchiver (nato per i nastri), è un'utilità di archiviazione non di compressione.
+Insieme ad altre utility di compressione è usato per comprimere i file, mentre "da solo" per visualizzare il contenuto ed estrarre.
+  tar -cvf nome_archivio.tar /roba_da_archiviare/   =>  -c create   -v verbose   -f indica il file
+  	=> -z   gzip (piu' veloce)
+  	=> -j   b2zip
+  	=> -J   xz   (maggiore compressione)
+  tar -tvf nome_archivio.tar   =>  mostra il contenuto dell'archivio
+  tar -xvf nome_archivio.tar   =>  estrae il contenuto dell'archivio
+  	=> -C per indicare un path di output
+  	=> -w  (od --interactive) chiede in caso di file con stesso nome
+  	=> --exclude='cartella/file' oppure --exclude='cartella/*.log	' 
+Linux non da importanza all'estensione, ma per comodità si usano:  .tar  .tgz  .tar.bz2  .tar.xz	
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
